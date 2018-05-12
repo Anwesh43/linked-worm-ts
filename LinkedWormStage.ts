@@ -83,7 +83,7 @@ class LWAnimator {
 
     start(cb : Function) {
         if(!this.animated) {
-            this.animated = false
+            this.animated = true
             this.interval = setInterval(() => {
                 cb()
             }, 50)
@@ -91,8 +91,8 @@ class LWAnimator {
     }
 
     stop() {
-        if (!this.animated) {
-            this.animated = true
+        if (this.animated) {
+            this.animated = false
             clearInterval(this.interval)
         }
     }
@@ -112,17 +112,20 @@ class LWNode {
 
 
     draw(context : CanvasRenderingContext2D) {
-        const gap : number = w/(NODES)
-        const r = gap/6
-        const getDeg : Function = (scale : number) => 180 + 180 * scale
+        const gap : number = w / (3 * NODES)
+        const r : number = gap/2
+        const getDeg : Function = (scale : number) => 180 + Math.floor(180 * scale)
         context.save()
-        context.translate(this.i * gap, h/2)
-        context.moveTo(0, 0)
-        context.lineTo((gap/3) * this.state.scales[0], 0)
+        context.translate(this.i * (3 * gap), h/2)
+        context.beginPath()
+        context.moveTo(gap * this.state.scales[1], 0)
+        context.lineTo((gap) * this.state.scales[0], 0)
         context.stroke()
-        for (var i = getDeg(this.state.scales[2]); i <= getDeg(this.state.scales[1]); i++) {
+        context.beginPath()
+        const start : number = getDeg(this.state.scales[2])
+        for (var i = start; i <= getDeg(this.state.scales[1]); i++) {
             const x : number = (gap+r) + r * Math.cos(i * Math.PI/180), y : number = r * Math.sin(i * Math.PI/180)
-            if (i == 180) {
+            if (i == start) {
                 context.moveTo(x, y)
             }
             else {
@@ -130,6 +133,7 @@ class LWNode {
             }
         }
         context.stroke()
+        context.beginPath()
         context.moveTo(2 * gap + gap * this.state.scales[3], 0)
         context.lineTo(2 * gap + gap * this.state.scales[2], 0)
         context.stroke()
@@ -179,6 +183,7 @@ class LinkedWorm {
             this.curr = this.curr.getNext(this.dir, () => {
                 this.dir *= -1
             })
+            console.log(this.curr)
             stopcb()
         })
     }
