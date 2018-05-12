@@ -1,4 +1,4 @@
-const w : number = window.innerWidth, h = window.innerHeight
+const w : number = window.innerWidth, h = window.innerHeight, NODES = 4
 class LinkedWormStage {
 
     canvas : HTMLCanvasElement = document.createElement('canvas')
@@ -79,5 +79,56 @@ class LWAnimator {
             this.animated = true
             clearInterval(this.interval)
         }
+    }
+}
+
+class LWNode {
+
+    next : LWNode
+
+    prev : LWNode
+
+    state : LWState = new LWState()
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+
+    draw(context : CanvasRenderingContext2D) {
+        const gap : number = w/(NODES)
+        const r = gap/6
+        const getDeg : Function = (scale : number) => 180 + 180 * scale
+        context.save()
+        context.translate(this.i * gap, h/2)
+        context.moveTo(0, 0)
+        context.lineTo((gap/3) * this.state.scales[0], 0)
+        context.stroke()
+        for (var i = getDeg(this.state.scales[2]); i <= getDeg(this.state.scales[1]); i++) {
+            const x : number = (gap+r) + r * Math.cos(i * Math.PI/180), y : number = r * Math.sin(i * Math.PI/180)
+            if (i == 180) {
+                context.moveTo(x, y)
+            }
+            else {
+                context.lineTo(x, y)
+            }
+            context.stroke()
+        }
+        context.restore()
+    }
+
+    addNeighbor() {
+        if (this.i < NODES - 1) {
+            this.next = new LWNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    update(stopcb : Function) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb : Function) {
+        this.state.startUpdating(startcb)
     }
 }
