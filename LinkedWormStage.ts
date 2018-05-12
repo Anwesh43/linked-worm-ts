@@ -128,8 +128,11 @@ class LWNode {
             else {
                 context.lineTo(x, y)
             }
-            context.stroke()
         }
+        context.stroke()
+        context.moveTo(2 * gap + gap * this.state.scales[3], 0)
+        context.lineTo(2 * gap + gap * this.state.scales[2], 0)
+        context.stroke()
         context.restore()
     }
 
