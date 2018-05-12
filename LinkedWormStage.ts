@@ -5,6 +5,10 @@ class LinkedWormStage {
 
     context : CanvasRenderingContext2D
 
+    linkedWorm : LinkedWorm = new LinkedWorm()
+
+    animator : LWAnimator = new LWAnimator()
+
     constructor() {
         this.initCanvas()
     }
@@ -19,11 +23,23 @@ class LinkedWormStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.context.strokeStyle = '#2ecc71'
+        this.context.lineWidth = Math.min(w, h) / 60
+        this.context.lineCap = 'round'
+        this.linkedWorm.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.linkedWorm.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.linkedWorm.update(() => {
+                        this.animator.stop()
+                        this.render()
+                    })
+                })
+            })
         }
     }
 }
