@@ -58,3 +58,26 @@ class LWState {
         }
     }
 }
+
+class LWAnimator {
+
+    animated : boolean = false
+
+    interval : number
+
+    start(cb : Function) {
+        if(!this.animated) {
+            this.animated = false
+            this.interval = setInterval(() => {
+                cb()
+            }, 50)
+        }
+    }
+
+    stop() {
+        if (!this.animated) {
+            this.animated = true
+            clearInterval(this.interval)
+        }
+    }
+}
