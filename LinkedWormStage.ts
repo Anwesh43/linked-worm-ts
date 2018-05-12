@@ -131,4 +131,40 @@ class LWNode {
     startUpdating(startcb : Function) {
         this.state.startUpdating(startcb)
     }
+
+    getNext(dir : number, cb : Function) : LWNode {
+        var curr : LWNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
+
+class LinkedWorm {
+
+    curr : LWNode = new LWNode(0)
+
+    dir : number = 1
+
+    draw(context : CanvasRenderingContext2D) {
+        this.curr.draw(context)
+    }
+
+    update(stopcb : Function) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            stopcb()
+        })
+    }
+
+    startUpdating(startcb : Function) {
+        this.curr.startUpdating(startcb)
+    }
 }
