@@ -184,3 +184,9 @@ class LinkedWorm {
         this.curr.startUpdating(startcb)
     }
 }
+
+const initLinkedWormStage : Function = () => {
+    const stage : LinkedWormStage = new LinkedWormStage()
+    stage.render()
+    stage.handleTap()
+}
